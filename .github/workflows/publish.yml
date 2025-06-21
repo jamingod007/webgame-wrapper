@@ -1,4 +1,4 @@
-name: Build and Publish
+name: Build and Publish Baidu Desktop App
 
 on:
   push:
@@ -8,19 +8,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
+      
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        
+    - name: Install Pake globally
+      run: npm install -g pake
 
-    - name: Setup Pake
-      run: npx pake setup
-
-    - name: Build application
-      run: npx pake build
+    - name: Build application with Pake
+      run: pake build
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2
+      uses: actions/upload-artifact@v4
       with:
         name: BaiduDesktopApp
         path: ./output/*
