@@ -20,6 +20,7 @@ jobs:
       run: npx pake build
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v2with:
+      uses: actions/upload-artifact@v2
+      with:
         name: BaiduDesktopApp
         path: ./output/*
