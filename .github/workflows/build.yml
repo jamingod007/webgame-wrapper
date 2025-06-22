@@ -8,7 +8,7 @@ on:
 jobs:
   build-windows-exe:
     runs-on: windows-latest
-    timeout-minutes: 15  # 防止长时间挂起
+    timeout-minutes: 15
 
     steps:
     - name: Checkout code
@@ -18,8 +18,8 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        # 明确禁用缓存避免锁文件错误
-        cache: 'false'  
+        # 正确禁用缓存的方式 - 完全移除 cache 参数
+        # 或者设置为空字符串：cache: ''
 
     - name: Install dependencies
       run: |
@@ -31,11 +31,11 @@ jobs:
         # 全局安装Pake
         npm install -g pake-cli --ignore-scripts
 
+        # 创建空锁文件避免错误
+        echo {} > package-lock.json
+
     - name: Build application
       run: |
-        # 创建必要的锁文件避免错误
-        echo "{}" > package-lock.json
-        
         # 执行构建脚本
         pwsh -ExecutionPolicy Bypass -File ./build.ps1
 
