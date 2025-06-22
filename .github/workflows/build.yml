@@ -3,11 +3,12 @@ name: Build Windows EXE
 on:
   push:
     branches: [ "main" ]
-  workflow_dispatch:  # 允许手动触发
+  workflow_dispatch:
 
 jobs:
   build-windows-exe:
-    runs-on: windows-latest  # 仅使用Windows环境
+    runs-on: windows-latest
+    timeout-minutes: 15  # 防止长时间挂起
 
     steps:
     - name: Checkout code
@@ -17,15 +18,25 @@ jobs:
       uses: actions/setup-node@v4
       with:
         node-version: '20'
-        cache: 'npm'
+        # 明确禁用缓存避免锁文件错误
+        cache: 'false'  
 
     - name: Install dependencies
       run: |
-        npm install -g pake-cli
-        npm install -g @electron-forge/cli
+        # 设置镜像源加速下载
+        npm config set registry https://registry.npmmirror.com
+        npm config set puppeteer_download_host https://npmmirror.com/mirrors
+        npm config set electron_mirror https://npmmirror.com/mirrors/electron/
+        
+        # 全局安装Pake
+        npm install -g pake-cli --ignore-scripts
 
     - name: Build application
       run: |
+        # 创建必要的锁文件避免错误
+        echo "{}" > package-lock.json
+        
+        # 执行构建脚本
         pwsh -ExecutionPolicy Bypass -File ./build.ps1
 
     - name: Upload artifact
