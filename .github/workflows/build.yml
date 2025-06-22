@@ -1,0 +1,36 @@
+name: Build Windows EXE
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest  # 仅使用Windows环境
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: |
+        npm install -g pake-cli
+        npm install -g @electron-forge/cli
+
+    - name: Build application
+      run: |
+        pwsh -ExecutionPolicy Bypass -File ./build.ps1
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Baidu-Windows-EXE
+        path: Baidu.exe
+        retention-days: 7

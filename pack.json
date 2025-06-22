@@ -1,0 +1,12 @@
+{
+  "url": "https://www.baidu.com",
+  "name": "Baidu",
+  "platform": "windows",
+  "targets": ["exe"],
+  "width": 1200,
+  "height": 800,
+  "transparent": false,
+  "resizable": true,
+  "userAgent": "Pake/Baidu",
+  "showMenu": false
+}
